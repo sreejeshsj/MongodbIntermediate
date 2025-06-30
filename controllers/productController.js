@@ -110,12 +110,14 @@ const getProductAggregationController=async(req,res)=>{
 }
 const getProductAnanlysisController=async (req,res)=>{
     try{
-            const result = await ProductModel.aggregate([{
+            const result = await ProductModel.aggregate([
+                {
                 $match:{
                    'category':"Electronics"
                 },
 
-            },{
+            }
+            ,{
                 $group:{
                     _id:null,
                     totalRevenu:{
@@ -129,6 +131,18 @@ const getProductAnanlysisController=async (req,res)=>{
                     },
                     minPRoductPrice:{
                         $min:"$price"
+                    }
+                }
+            },
+            {
+                $project:{
+                    _id:0,
+                    totalRevenu:1,
+                    avgPrice:1,
+                    maxProductPrice:1,
+                    minPRoductPrice:1,
+                    priceRange:{
+                        $subtract:['$maxProductPrice','$minPRoductPrice']
                     }
                 }
             }
